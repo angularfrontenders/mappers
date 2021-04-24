@@ -11,6 +11,9 @@ import { IEntity } from './mapper/iEntity';
 export class AppComponent implements OnInit {
 
     title = 'mappers';
+    readEntity: IReadEntity;
+    entity: IEntity;
+    entities: Array<IEntity>;
 
     public constructor(private _entityMapperService: EntityMapperService) {
 
@@ -18,18 +21,18 @@ export class AppComponent implements OnInit {
 
     ngOnInit(): void {
         // Map entity
-        const readEntity: IReadEntity = {
+        this.readEntity = {
             id: '123',
             name: 'example mapper',
             birthDate: '2000/01/01',
             type: 'person',
             version: 2
         };
-        const entity: IEntity = this._entityMapperService.transform(readEntity);
+        this.entity = this._entityMapperService.transform(this.readEntity);
 
         // Map array of entities
-        const arrayEntities: Array<IReadEntity> = [readEntity];
-        const entities: Array<IEntity> = this._entityMapperService.transform(arrayEntities);
+        const arrayEntities: Array<IReadEntity> = [this.readEntity];
+        this.entities = this._entityMapperService.transform(arrayEntities);
     }
 
 }
