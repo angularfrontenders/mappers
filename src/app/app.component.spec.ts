@@ -1,5 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { EntityMapperService } from './mapper/entityMapper.service';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {
@@ -7,6 +8,9 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
+      providers: [
+        EntityMapperService
+      ]
     }).compileComponents();
   }));
 
