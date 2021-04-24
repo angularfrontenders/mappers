@@ -16,4 +16,8 @@
         <h2>Map array of entities</h2>
         {{ entities | json }}
     </li>
+    <li>
+        <h2>Map array of entities Observable</h2>
+        {{ arrayEntities$ | async | json }}
+    </li>
 </ul>

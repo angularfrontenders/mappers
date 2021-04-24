@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { of, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { EntityMapperService } from './mapper/entityMapper.service';
 import { IReadEntity } from './mapper/iReadEntity';
 import { IEntity } from './mapper/iEntity';
@@ -14,9 +17,9 @@ export class AppComponent implements OnInit {
     readEntity: IReadEntity;
     entity: IEntity;
     entities: Array<IEntity>;
+    arrayEntities$: Observable<Array<IEntity>>;
 
     public constructor(private _entityMapperService: EntityMapperService) {
-
     }
 
     ngOnInit(): void {
@@ -31,8 +34,13 @@ export class AppComponent implements OnInit {
         this.entity = this._entityMapperService.transform(this.readEntity);
 
         // Map array of entities
-        const arrayEntities: Array<IReadEntity> = [this.readEntity];
-        this.entities = this._entityMapperService.transform(arrayEntities);
+        const arrayReadEntities: Array<IReadEntity> = [this.readEntity];
+        this.entities = this._entityMapperService.transform(arrayReadEntities);
+
+        // Use in observables
+        const arrayReadEntities$: Observable<Array<IReadEntity>> = of(arrayReadEntities);
+        this.arrayEntities$ = arrayReadEntities$.pipe(map((readEntity: Array<IReadEntity>) => this._entityMapperService.transform(readEntity)));
+
     }
 
 }
