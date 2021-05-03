@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { of, Observable } from 'rxjs';
+import { Observable, of, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { EntityMapperService } from './mapper/entityMapper.service';
@@ -14,33 +14,61 @@ import { IEntity } from './mapper/iEntity';
 export class AppComponent implements OnInit {
 
     title = 'mappers';
-    readEntity: IReadEntity;
+    readEntities: Array<IReadEntity>;
     entity: IEntity;
     entities: Array<IEntity>;
-    arrayEntities$: Observable<Array<IEntity>>;
+    entitiesOf$: Observable<Array<IEntity>>;
+    entitiesFrom: Array<IEntity> = [];
 
     public constructor(private _entityMapperService: EntityMapperService) {
     }
 
     ngOnInit(): void {
         // Map entity
-        this.readEntity = {
-            id: '123',
-            name: 'example mapper',
-            birthDate: '2000/01/01',
-            type: 'person',
-            version: 2
-        };
-        this.entity = this._entityMapperService.transform(this.readEntity);
+        this.readEntities = [
+            {
+                id: '1',
+                name: 'example mapper',
+                birthDate: '2000/01/01',
+                type: 'person',
+                version: 1
+            }
+            , {
+                id: '2',
+                name: 'example mapper 2',
+                birthDate: '2000/01/01',
+                type: 'person2',
+                version: 2
+            }
+        ];
+
+        this.entity = this._entityMapperService.transform(this.readEntities[0]);
 
         // Map array of entities
-        const arrayReadEntities: Array<IReadEntity> = [this.readEntity];
-        this.entities = this._entityMapperService.transform(arrayReadEntities);
+        this.entities = this._entityMapperService.transform(this.readEntities);
 
         // Use in observables
-        const arrayReadEntities$: Observable<Array<IReadEntity>> = of(arrayReadEntities);
-        this.arrayEntities$ = arrayReadEntities$.pipe(map((readEntity: Array<IReadEntity>) => this._entityMapperService.transform(readEntity)));
+        // of
+        const readEntitiesOf$: Observable<Array<IReadEntity>> = of(this.readEntities);
+        this.entitiesOf$ = readEntitiesOf$
+        .pipe(
+            map(
+            (readEntity: Array<IReadEntity>) =>
+                this._entityMapperService.transform(readEntity)
+            ));
 
+        // from
+        const arrayReadEntitiesFrom$: Observable<IReadEntity> = from(this.readEntities);
+        arrayReadEntitiesFrom$.pipe(map((readEntity: IReadEntity) =>
+            this._entityMapperService.transform(readEntity)
+        ))
+        .subscribe((value: IEntity) =>
+            this.entitiesFrom.push(value)
+        );
+    }
+
+    public entityId(index: number, entity: IEntity): string {
+        return entity.id;
     }
 
 }

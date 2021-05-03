@@ -5,7 +5,7 @@
     <img alt="Angular Frontenders" src="../assets/angular-frontenders.png">
 </div>
 <h2>Entity:</h2>
-{{ readEntity | json }}
+{{ readEntities[0] | json }}
 <h2>Uses:</h2>
 <ul>
     <li>
@@ -18,6 +18,14 @@
     </li>
     <li>
         <h2>Map array of entities Observable</h2>
-        {{ arrayEntities$ | async | json }}
+        {{ entitiesOf$ | async | json }}
+    </li>
+   
+    <li>
+        <h2>Map array from entities Observable</h2>
+        <div *ngFor="let entity of entitiesFrom; trackBy:entityId">
+            {{ entity | json }}
+        </div>
+        
     </li>
 </ul>
